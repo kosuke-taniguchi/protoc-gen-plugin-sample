@@ -41,6 +41,7 @@ func process(req *plugin.CodeGeneratorRequest) *plugin.CodeGeneratorResponse {
 }
 
 func generateCode(proto *descriptor.FileDescriptorProto) string {
+	// TODO: gotemplateを利用してコード生成
 	return "syntax = \"proto3\";"
 }
 
