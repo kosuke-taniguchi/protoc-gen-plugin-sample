@@ -5,7 +5,7 @@ package mysql
 
 import (
 	"context"
-	"my-proto-plugin/gen/go/{{.ProtoPackage}}"
+	"my-proto-plugin/proto/{{.ProtoPackage}}"
 
 	"github.com/gocraft/dbr/v2"
 )

@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"context"
-	"my-proto-plugin/gen/go/user"
+	"my-proto-plugin/proto/user"
 
 	"github.com/gocraft/dbr/v2"
 )

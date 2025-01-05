@@ -1,6 +1,6 @@
 protoc:
-	protoc --proto_path=proto --go_out=gen/go proto/user.proto
+	protoc --proto_path=proto --go_out=proto/ proto/*/*.proto
 protoc-plugin:
-	protoc --proto_path=proto --go_out=gen/go --myplugin_out=gen/go/mysql proto/user.proto
+	protoc --proto_path=proto --go_out=proto/ --myplugin_out=gen/go/mysql proto/*/*.proto
 install:
 	go install ./plugin/protoc-gen-myplugin
