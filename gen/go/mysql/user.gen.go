@@ -15,11 +15,7 @@ var userColumns = []string{
 
 	"Name",
 
-	"Email",
-
 	"Password",
-
-	"Birthday",
 }
 
 func GetUserColumns() []string {
@@ -51,11 +47,7 @@ func UpdateUser(ctx context.Context, sess *dbr.Session, user *user.User) error {
 
 		"Name": user.Name,
 
-		"Email": user.Email,
-
 		"Password": user.Password,
-
-		"Birthday": user.Birthday,
 	}).Where(dbr.Eq("", user.Id)).ExecContext(ctx)
 	if err != nil {
 		return err

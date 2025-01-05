@@ -2,19 +2,19 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"go/format"
 	"html/template"
 	"io"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
 	dbtemplate "my-proto-plugin/plugin/protoc-gen-myplugin/template"
 
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -68,16 +68,10 @@ func process(req *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, e
 }
 
 func generateFiles(protoFile *descriptor.FileDescriptorProto) ([]*plugin.CodeGeneratorResponse_File, error) {
-	var goPkgName string
-	if options := protoFile.GetOptions(); options != nil {
-		goPkgName = filepath.Base(options.GetGoPackage())
-	}
-	if goPkgName == "" {
-		return nil, errors.New("package name not found")
-	}
 	files := make([]*plugin.CodeGeneratorResponse_File, 0, len(protoFile.GetMessageType()))
+	protoFilename := protoFile.GetPackage()
 	for _, msg := range protoFile.GetMessageType() {
-		filename, code, err := generateCode(msg)
+		filename, code, err := generateCode(protoFilename, msg)
 		if err != nil {
 			return nil, err
 		}
@@ -90,11 +84,12 @@ func generateFiles(protoFile *descriptor.FileDescriptorProto) ([]*plugin.CodeGen
 }
 
 type templateData struct {
-	GoPackage string
-	Entity    string // initial is uppercase
-	Table     string
-	Fields    []field
-	PK        string
+	ProtoPackage string
+	GoPackage    string
+	Entity       string // initial is uppercase
+	Table        string
+	Fields       []field
+	PK           string
 }
 
 type field struct {
@@ -102,19 +97,19 @@ type field struct {
 }
 
 // output is filename and its code
-func generateCode(message *descriptor.DescriptorProto) (string, string, error) {
+func generateCode(profoFilename string, message *descriptor.DescriptorProto) (string, string, error) {
 	table := strings.ToLower(message.GetName())
 	fields := make([]field, 0, len(message.GetField()))
 	for _, f := range message.GetField() {
-		name := snakeCaseToPascalCase(f.GetName())
+		name := snakeToPascalCase(f.GetName())
 		fields = append(fields, field{Name: name})
 	}
 	data := templateData{
-		GoPackage: table,
-		Entity:    message.GetName(),
-		Table:     table,
-		Fields:    fields,
-		PK:        "",
+		ProtoPackage: profoFilename,
+		GoPackage:    table,
+		Entity:       message.GetName(),
+		Fields:       fields,
+		PK:           "",
 	}
 	tmpl, err := template.New("goCode").Parse(dbtemplate.DBTemplate)
 	if err != nil {
@@ -131,8 +126,12 @@ func generateCode(message *descriptor.DescriptorProto) (string, string, error) {
 	return table + ".gen.go", string(formated), nil
 }
 
-func snakeCaseToPascalCase(s string) string {
-	return strings.Title(strings.ReplaceAll(s, "_", ""))
+func snakeToPascalCase(s string) string {
+	words := strings.Split(s, "_")
+	for i, word := range words {
+		words[i] = cases.Title(language.AmericanEnglish).String(word)
+	}
+	return strings.Join(words, "")
 }
 
 func main() {

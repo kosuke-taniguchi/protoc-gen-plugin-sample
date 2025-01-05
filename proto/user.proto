@@ -4,9 +4,20 @@ package user;
 option go_package = "./user";
 
 message User {
-    string id       = 1 ;
+    string id       = 1;
     string name     = 2;
+    string password = 3;
+}
+
+message Profile {
+    string user_id  = 1;
+    int64  birthday = 2;
     string email    = 3;
-    string password = 4;
-    int64  birthday = 5;
+    Gender gender   = 4;
+}
+
+enum Gender {
+    UNKNOWN = 0;
+    MALE    = 1;
+    FEMALE  = 2;
 }

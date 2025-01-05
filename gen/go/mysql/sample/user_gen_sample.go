@@ -42,9 +42,7 @@ func GetUser(ctx context.Context, sess *dbr.Session, id string) (*user.User, err
 func UpdateUser(ctx context.Context, sess *dbr.Session, user *user.User) error {
 	_, err := sess.Update(TableUser).SetMap(map[string]interface{}{
 		"name":     user.Name,
-		"email":    user.Email,
 		"password": user.Password,
-		"birthday": user.Birthday,
 	}).Where(dbr.Eq("id", user.Id)).ExecContext(ctx)
 	if err != nil {
 		return err

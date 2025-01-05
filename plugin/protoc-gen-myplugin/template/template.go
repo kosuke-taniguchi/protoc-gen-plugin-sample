@@ -5,7 +5,7 @@ package mysql
 
 import (
 	"context"
-	"my-proto-plugin/gen/go/{{.GoPackage}}"
+	"my-proto-plugin/gen/go/{{.ProtoPackage}}"
 
 	"github.com/gocraft/dbr/v2"
 )
@@ -22,7 +22,7 @@ func Get{{.Entity}}Columns() []string {
 	return {{.GoPackage}}Columns
 }
 
-func Create{{.Entity}}(ctx context.Context, sess *dbr.Session, {{.GoPackage}} *{{.GoPackage}}.{{.Entity}}) error {
+func Create{{.Entity}}(ctx context.Context, sess *dbr.Session, {{.GoPackage}} *{{.ProtoPackage}}.{{.Entity}}) error {
 	_, err := sess.InsertInto(Table{{.Entity}}).Columns({{.GoPackage}}Columns...).ExecContext(ctx)
 	if err != nil {
 		return err
@@ -30,8 +30,8 @@ func Create{{.Entity}}(ctx context.Context, sess *dbr.Session, {{.GoPackage}} *{
 	return nil
 }
 
-func Get{{.Entity}}(ctx context.Context, sess *dbr.Session, id string) (*{{.GoPackage}}.{{.Entity}}, error) {
-	var rec *{{.GoPackage}}.{{.Entity}}
+func Get{{.Entity}}(ctx context.Context, sess *dbr.Session, id string) (*{{.ProtoPackage}}.{{.Entity}}, error) {
+	var rec *{{.ProtoPackage}}.{{.Entity}}
 	err := sess.Select({{.GoPackage}}Columns).From(Table{{.Entity}}).
 		Where(dbr.Eq("{{.PK}}", id)).LoadOneContext(ctx, rec)
 	if err != nil {
@@ -40,7 +40,7 @@ func Get{{.Entity}}(ctx context.Context, sess *dbr.Session, id string) (*{{.GoPa
 	return rec, nil
 }
 
-func Update{{.Entity}}(ctx context.Context, sess *dbr.Session, {{.GoPackage}} *{{.GoPackage}}.{{.Entity}}) error {
+func Update{{.Entity}}(ctx context.Context, sess *dbr.Session, {{.GoPackage}} *{{.ProtoPackage}}.{{.Entity}}) error {
 	_, err := sess.Update(Table{{.Entity}}).SetMap(map[string]interface{}{
 		{{range .Fields}}
 		"{{.Name}}": {{$.GoPackage}}.{{.Name}},
