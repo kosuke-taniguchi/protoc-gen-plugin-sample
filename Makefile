@@ -3,4 +3,4 @@ protoc:
 protoc-plugin:
 	protoc --proto_path=proto --go_out=gen/go --myplugin_out=gen/go/mysql proto/user.proto
 install:
-	go install ./cmd/protoc-gen-myplugin
+	go install ./plugin/protoc-gen-myplugin

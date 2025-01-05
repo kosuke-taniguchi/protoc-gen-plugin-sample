@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	dbtemplate "my-proto-plugin/cmd/protoc-gen-myplugin/template"
+	dbtemplate "my-proto-plugin/plugin/protoc-gen-myplugin/template"
 
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
